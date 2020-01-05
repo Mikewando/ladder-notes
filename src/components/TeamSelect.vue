@@ -5,16 +5,29 @@
       <div v-for="index in teamLayout" :key="index" class="column is-half">
         <div class="box">
           <div class="columns">
-          <multiselect
+          <v-select
               :value="$store.state.battles[$props.battleId][$props.side].team[index]"
               @input="input(index, $event)"
               :options="$store.state.pokemonOptions"
+              class="mons column is-8 is-offset-2"
+              label="name"
+              >
+              <template v-slot:option="option">
+                <span class="picon" :style="`${getIcon(option.name)}`"></span>
+                <span class="plabel">{{ option.name }}</span>
+              </template>
+              <template v-slot:selected-option="option">
+                <span class="picon" :style="`${getIcon(option.name)}`"></span>
+                <span class="plabel">{{ option.name }}</span>
+              </template>
+              <!--
               :option-height="30" 
-              class="mons column is-three-fifths is-offset-one-fifth"
               placeholder=""
               selectLabel=""
               deselectLabel=""
               selectedLabel="">
+              -->
+            <!--
             <template slot="placeholder">
               <div class="plabel">
                 <span class="picon" style="background:transparent url(https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?g8) no-repeat scroll -0px -0px"></span>
@@ -33,7 +46,8 @@
                 <span class="pname">{{ props.option }}</span>
               </div>
             </template>
-          </multiselect>
+            -->
+          </v-select>
           </div>
         </div>
       </div>
@@ -43,6 +57,7 @@
 
 <script>
 import Multiselect from 'vue-multiselect'
+import vSelect from 'vue-select'
 
 export default {
   name: 'TeamSelect',
@@ -51,7 +66,7 @@ export default {
     battleId: Number
   },
   components: {
-    Multiselect
+    vSelect
   },
   methods: {
     getIcon (name) {
@@ -93,38 +108,21 @@ export default {
 </script>
 
 <style>
-/* This is all kind of a hack... */
-.team .multiselect__tags {
-  min-height: 48px;
+.vs__selected {
+  min-width: 0;
+}
+.vs__selected-options {
+  min-width: 0;
+  flex-wrap: nowrap;
   padding: 0;
+  min-height: 36px;
 }
-.team .multiselect__single {
-  margin-top: 8px;
-  margin-bottom: 8px;
-  padding-right: 12px;
-  padding-left: 12px;
+.vs__dropdown-menu {
 }
-.team .multiselect__input {
-  margin-top: 8px;
-  margin-bottom: 8px;
-  padding-right: 52px;
-  padding-left: 52px;
-  font-size: 16px;
-  line-height: 30px;
+.vs__dropdown-toggle {
 }
-.team .multiselect__placeholder {
-  font-size: 16px;
-  margin-top: 8px;
-  margin-bottom: 8px;
-  margin-right: 12px;
-  margin-left: 12px;
-  padding: 0;
-}
-.team .multiselect__select::before {
-  z-index: 10;
-}
-.team .multiselect__select {
-  z-index: 10;
+.vs__dropdown-option {
+  padding-left: 8px;
 }
 </style>
 
@@ -132,7 +130,7 @@ export default {
 <style scoped>
 /* default stuff */
 h3 {
-  margin: 40px 0 0;
+  margin: 42px 0 0;
 }
 ul {
   list-style-type: none;
@@ -147,18 +145,24 @@ a {
 }
 
 /* custom stuff */
+.v-select {
+  padding: 0;
+}
 /*
 .mons {
   max-width: 300px;
 }
 */
 .picon {
-  display: inline-block;
   width: 40px;
   height: 30px;
+  flex-shrink: 0;
+  display: inline-block;
 }
 .plabel {
-  display: flex;
-  align-items: center;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  overflow: hidden;
+  min-width: 0;
 }
 </style>
