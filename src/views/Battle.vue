@@ -1,6 +1,6 @@
 <template>
   <div class="battle">
-    <h1>Battle {{id}}</h1>
+    <h1 class="title">Battle {{id}}</h1>
     <TeamSelect :battleId="id" side="opponent" />
   </div>
 </template>

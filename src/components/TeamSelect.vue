@@ -1,6 +1,6 @@
 <template>
   <div class="team">
-    <h1>{{ side }}</h1>
+    <h2 class="subtitle">{{ side }}</h2>
     <div class="mons">
       <multiselect
           v-for="index in 6"

@@ -1,7 +1,13 @@
 <template>
   <div class="home">
-    <div class="link-wrapper" v-for="id in 2" :key="id">
-      <router-link tag="button" class="battle-link" :to="{ name: 'battle', params: { id: id } }">
+    <h1 class="title">Battles</h1>
+    <div class="battles">
+      <router-link
+          v-for="id in 2"
+          :key="id"
+          tag="b-button"
+          class="battle-link"
+          :to="{ name: 'battle', params: { id: id } }">
         Battle {{id}}
       </router-link>
     </div>
@@ -15,8 +21,11 @@ export default {
 </script>
 
 <style scoped>
-.link-wrapper {
-  display: block;
-  width: 100%;
+.battles {
+  display: grid;
+  grid-row: 1fr;
+  grid-gap: 10px;
+  max-width: 300px;
+  margin: auto;
 }
 </style>
