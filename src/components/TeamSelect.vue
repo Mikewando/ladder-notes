@@ -1,37 +1,42 @@
 <template>
-  <div class="team">
+  <div class="team section">
     <h2 class="subtitle">{{ side }}</h2>
-    <div class="mons">
-      <multiselect
-          v-for="index in 6"
-          :key="index"
-          :value="$store.state.battles[$props.battleId][$props.side].team[index - 1]"
-          @input="input(index - 1, $event)"
-          :options="$store.state.pokemonOptions"
-          :option-height="30" 
-          placeholder=""
-          selectLabel=""
-          deselectLabel=""
-          selectedLabel="">
-        <template slot="placeholder">
-          <div class="plabel">
-            <span class="picon" style="background:transparent url(https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?g8) no-repeat scroll -0px -0px"></span>
-            <span class="pname">Select Pokemon</span>
+    <div class="columns is-multiline">
+      <div v-for="index in teamLayout" :key="index" class="column is-half">
+        <div class="box">
+          <div class="columns">
+          <multiselect
+              :value="$store.state.battles[$props.battleId][$props.side].team[index]"
+              @input="input(index, $event)"
+              :options="$store.state.pokemonOptions"
+              :option-height="30" 
+              class="mons column is-three-fifths is-offset-one-fifth"
+              placeholder=""
+              selectLabel=""
+              deselectLabel=""
+              selectedLabel="">
+            <template slot="placeholder">
+              <div class="plabel">
+                <span class="picon" style="background:transparent url(https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?g8) no-repeat scroll -0px -0px"></span>
+                <span class="pname">Select Pokemon</span>
+              </div>
+            </template>
+            <template slot="singleLabel" slot-scope="props">
+              <div class="plabel">
+                <span class="picon" :style="`${getIcon(props.option.name)}`"></span>
+                <span class="pname">{{ props.option.name }}</span>
+              </div>
+            </template>
+            <template slot="option" slot-scope="props">
+              <div class="plabel">
+                <span class="picon" :style="`${getIcon(props.option)}`" ></span>
+                <span class="pname">{{ props.option }}</span>
+              </div>
+            </template>
+          </multiselect>
           </div>
-        </template>
-        <template slot="singleLabel" slot-scope="props">
-          <div class="plabel">
-            <span class="picon" :style="`${getIcon(props.option.name)}`"></span>
-            <span class="pname">{{ props.option.name }}</span>
-          </div>
-        </template>
-        <template slot="option" slot-scope="props">
-          <div class="plabel">
-            <span class="picon" :style="`${getIcon(props.option)}`" ></span>
-            <span class="pname">{{ props.option }}</span>
-          </div>
-        </template>
-      </multiselect>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -63,6 +68,11 @@ export default {
         prop: 'name',
         value: choice
       })
+    }
+  },
+  computed: {
+    teamLayout () {
+      return [...Array(6).keys()]
     }
   },
   data () {
@@ -137,15 +147,11 @@ a {
 }
 
 /* custom stuff */
-.team {
-  max-width: 500px;
-}
-
+/*
 .mons {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-gap: 10px;
+  max-width: 300px;
 }
+*/
 .picon {
   display: inline-block;
   width: 40px;

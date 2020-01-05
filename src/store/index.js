@@ -12,14 +12,17 @@ function newTeam () {
   const output = []
   for (let i = 0; i < 6; i++) {
     output[i] = {
-      name: null
+      name: null,
+      moves: [],
+      brought: false
     }
   }
   return output
 }
 
-function newBattle () {
+function newBattle (battleId) {
   return {
+    id: battleId,
     player: {
       team: newTeam()
     },
@@ -46,19 +49,15 @@ export default new Vuex.Store({
   },
   mutations: {
     createBattle (state, {battleId}) {
-      Vue.set(state.battles, battleId, newBattle())
+      state.battles.unshift(newBattle(battleId))
     },
     updateTeam (state, {battleId, side, teamIndex, prop, value}) {
       const newMon = {...state.battles[battleId][side].team[teamIndex]}
       newMon[prop] = value
       Vue.set(state.battles[battleId][side].team, teamIndex, newMon)
     },
-  },
-  actions: {
-    loadBattles (context) {
-    },
-    updateTeam (context, options) {
-      return context.commit('updateTeam', options)
+    updateResult (state, {battleId, result}) {
+      Vue.set(state.battles[battleId], 'result', result)
     }
   },
   modules: {

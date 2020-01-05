@@ -8,14 +8,6 @@
   </div>
 </template>
 
-<script>
-export default {
-  created () {
-    console.log('App created');
-  }
-}
-</script>
-
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
 <style lang="scss">
@@ -40,6 +32,6 @@ export default {
 }
 
 #nav a.router-link-exact-active {
-  color: #42b983;
+  /*color: #42b983;*/
 }
 </style>
