@@ -2,7 +2,7 @@
   <div class="team">
     <h1>{{ side }}</h1>
     <div class="mons">
-      <multiselect v-for="index in 6" :key="index" :v-model="`testTeam[${index - 1}]`.name"
+      <multiselect v-for="index in 6" :key="index" v-model="testTeam[index].name"
                    :options="options" :option-height="30" 
                    placeholder="" selectLabel="" deselectLabel="" selectedLabel="">
       <!--
