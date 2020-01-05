@@ -21,7 +21,6 @@ export default {
     }
   },
   created () {
-    console.log(this.$store.state)
     if (!this.$store.state.battles[this.id]) {
       this.$store.commit('createBattle', {battleId: this.id});
     }

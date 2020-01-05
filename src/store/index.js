@@ -3,10 +3,12 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
-function basicArray () {
+function newTeam () {
   const output = []
   for (let i = 0; i < 6; i++) {
-    output[i] = null
+    output[i] = {
+      name: null
+    }
   }
   return output
 }
@@ -14,10 +16,10 @@ function basicArray () {
 function newBattle () {
   return {
     player: {
-      team: basicArray()
+      team: newTeam()
     },
     opponent: {
-      team: basicArray()
+      team: newTeam()
     }
   }
 }
@@ -41,8 +43,10 @@ export default new Vuex.Store({
     createBattle (state, {battleId}) {
       Vue.set(state.battles, battleId, newBattle())
     },
-    updateTeam (state, {battleId, side, teamIndex, name}) {
-      Vue.set(state.battles[battleId][side].team, teamIndex, name)
+    updateTeam (state, {battleId, side, teamIndex, prop, value}) {
+      const newMon = {...state.battles[battleId][side].team[teamIndex]}
+      newMon[prop] = value
+      Vue.set(state.battles[battleId][side].team, teamIndex, newMon)
     },
   },
   actions: {

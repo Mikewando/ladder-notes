@@ -21,8 +21,8 @@
         </template>
         <template slot="singleLabel" slot-scope="props">
           <div class="plabel">
-            <span class="picon" :style="`${getIcon(props.option)}`"></span>
-            <span class="pname">{{ props.option }}</span>
+            <span class="picon" :style="`${getIcon(props.option.name)}`"></span>
+            <span class="pname">{{ props.option.name }}</span>
           </div>
         </template>
         <template slot="option" slot-scope="props">
@@ -56,12 +56,12 @@ export default {
       return name.toLowerCase()
     },
     input (index, choice) {
-      console.log(`Battle #${this.$props.battleId} ${this.$props.side} pokemon #${index} is ${choice}`)
       this.$store.commit('updateTeam', {
         battleId: this.$props.battleId,
         side: this.$props.side,
         teamIndex: index,
-        name: choice
+        prop: 'name',
+        value: choice
       })
     }
   },
