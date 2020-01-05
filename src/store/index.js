@@ -1,11 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import { getField, updateField } from 'vuex-map-fields'
-
 Vue.use(Vuex)
 
-function newTeam () {
+function basicArray () {
   const output = []
   for (let i = 0; i < 6; i++) {
     output[i] = null
@@ -13,53 +11,45 @@ function newTeam () {
   return output
 }
 
+function newBattle () {
+  return {
+    player: {
+      team: basicArray()
+    },
+    opponent: {
+      team: basicArray()
+    }
+  }
+}
+
+function getPokemonOptions () {
+  return Object.entries(BattlePokedex)
+      .filter(([_, value]) => {
+        return value && value.num >= 0
+      })
+      .map(([_, value]) => {
+        return value.species
+      })
+}
+
 export default new Vuex.Store({
   state: {
-    opponentTeam: [
-      {
-        name: null
-      },
-      {
-        name: null
-      },
-      {
-        name: null
-      },
-      {
-        name: null
-      },
-      {
-        name: null
-      },
-      {
-        name: null
-      },
-    ],
-    battles: []
-  },
-  getters: {
-    getField
+    battles: [],
+    pokemonOptions: getPokemonOptions()
   },
   mutations: {
     createBattle (state, {battleId}) {
-      state.battles[battleId] = {
-        player: {
-          team: newTeam()
-        },
-        opponent: {
-          team: newTeam()
-        }
-      }
+      Vue.set(state.battles, battleId, newBattle())
     },
-    /*
     updateTeam (state, {battleId, side, teamIndex, name}) {
       Vue.set(state.battles[battleId][side].team, teamIndex, name)
     },
-    */
-    updateField
   },
   actions: {
     loadBattles (context) {
+    },
+    updateTeam (context, options) {
+      return context.commit('updateTeam', options)
     }
   },
   modules: {

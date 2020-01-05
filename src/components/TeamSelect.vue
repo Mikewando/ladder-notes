@@ -2,17 +2,17 @@
   <div class="team">
     <h1>{{ side }}</h1>
     <div class="mons">
-      <multiselect v-for="index in 6" :key="index" v-model="testTeam[index].name"
-                   :options="options" :option-height="30" 
-                   placeholder="" selectLabel="" deselectLabel="" selectedLabel="">
-      <!--
-      <multiselect v-for="(member, i) in testTeam" :key="i" :v-model="member.name"
-                   :options="options" :option-height="30" 
-                   placeholder="" selectLabel="" deselectLabel="" selectedLabel="">
-      <multiselect v-for="index in 6" :key="index" :v-model="`opponentTeam[${index - 1}]`.name"
-                   :options="options" :option-height="30" 
-                   placeholder="" selectLabel="" deselectLabel="" selectedLabel="">
-      -->
+      <multiselect
+          v-for="index in 6"
+          :key="index"
+          :value="$store.state.battles[$props.battleId][$props.side].team[index - 1]"
+          @input="input(index - 1, $event)"
+          :options="$store.state.pokemonOptions"
+          :option-height="30" 
+          placeholder=""
+          selectLabel=""
+          deselectLabel=""
+          selectedLabel="">
         <template slot="placeholder">
           <div class="plabel">
             <span class="picon" style="background:transparent url(https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?g8) no-repeat scroll -0px -0px"></span>
@@ -38,16 +38,6 @@
 
 <script>
 import Multiselect from 'vue-multiselect'
-//import { createHelpers } from 'vuex-map-fields'
-import { mapMultiRowFields } from 'vuex-map-fields'
-//:value="`${opponentTeam[index - 1]}`" @input="input(index - 1, $event)"
-
-/*
-const { mapMultiRowFields } = createHelpers({
-  getterType: 'getOpponentTeam',
-  mutationType: 'updateOpponentTeam'
-})
-*/
 
 export default {
   name: 'TeamSelect',
@@ -75,14 +65,6 @@ export default {
       })
     }
   },
-  computed: {
-    /*
-    ...mapMultiRowFields(['opponentTeam'])
-    opponentTeam () {
-        return this.$store.state.battles[this.$props.battleId][this.$props.side].team
-    },
-    */
-  },
   data () {
     const options = Object.entries(BattlePokedex)
       .filter(([key, value]) => {
@@ -93,24 +75,6 @@ export default {
       })
     return {
       testTeam: [
-      {
-        name: null
-      },
-      {
-        name: null
-      },
-      {
-        name: null
-      },
-      {
-        name: null
-      },
-      {
-        name: null
-      },
-      {
-        name: null
-      },
       ],
       options: options
     }
