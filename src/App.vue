@@ -8,6 +8,14 @@
   </div>
 </template>
 
+<script>
+export default {
+  created () {
+    console.log('App created');
+  }
+}
+</script>
+
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 
 <style>

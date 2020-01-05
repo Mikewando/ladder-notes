@@ -1,44 +1,87 @@
 <template>
   <div class="team">
-    <h1>{{ owner }}</h1>
-    <multiselect v-for="index in 6" :key="index" v-model="opponentTeam[index]" :options="options" :option-height="30" :custom-label="searchLabel" placeholder="">
-      <template slot="placeholder">
-        <div class="plabel">
-          <span class="picon" style="background:transparent url(https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?g8) no-repeat scroll -0px -0px"></span>
-          <span class="pname">Select Pokemon</span>
-        </div>
-      </template>
-      <template slot="singleLabel" slot-scope="props">
-        <div class="plabel">
-          <span class="picon" :style="props.option.style"></span>
-          <span class="pname">{{ props.option.name }}</span>
-        </div>
-      </template>
-      <template slot="option" slot-scope="props">
-        <div class="plabel">
-          <span class="picon" :style="props.option.style"></span>
-          <span class="pname">{{ props.option.name }}</span>
-        </div>
-      </template>
-    </multiselect>
+    <h1>{{ side }}</h1>
+    <div class="mons">
+      <multiselect v-for="index in 6" :key="index" :v-model="`testTeam[${index - 1}]`.name"
+                   :options="options" :option-height="30" 
+                   placeholder="" selectLabel="" deselectLabel="" selectedLabel="">
+      <!--
+      <multiselect v-for="(member, i) in testTeam" :key="i" :v-model="member.name"
+                   :options="options" :option-height="30" 
+                   placeholder="" selectLabel="" deselectLabel="" selectedLabel="">
+      <multiselect v-for="index in 6" :key="index" :v-model="`opponentTeam[${index - 1}]`.name"
+                   :options="options" :option-height="30" 
+                   placeholder="" selectLabel="" deselectLabel="" selectedLabel="">
+      -->
+        <template slot="placeholder">
+          <div class="plabel">
+            <span class="picon" style="background:transparent url(https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?g8) no-repeat scroll -0px -0px"></span>
+            <span class="pname">Select Pokemon</span>
+          </div>
+        </template>
+        <template slot="singleLabel" slot-scope="props">
+          <div class="plabel">
+            <span class="picon" :style="`${getIcon(props.option)}`"></span>
+            <span class="pname">{{ props.option }}</span>
+          </div>
+        </template>
+        <template slot="option" slot-scope="props">
+          <div class="plabel">
+            <span class="picon" :style="`${getIcon(props.option)}`" ></span>
+            <span class="pname">{{ props.option }}</span>
+          </div>
+        </template>
+      </multiselect>
+    </div>
   </div>
 </template>
 
 <script>
 import Multiselect from 'vue-multiselect'
+//import { createHelpers } from 'vuex-map-fields'
+import { mapMultiRowFields } from 'vuex-map-fields'
+//:value="`${opponentTeam[index - 1]}`" @input="input(index - 1, $event)"
+
+/*
+const { mapMultiRowFields } = createHelpers({
+  getterType: 'getOpponentTeam',
+  mutationType: 'updateOpponentTeam'
+})
+*/
 
 export default {
   name: 'TeamSelect',
   props: {
-    owner: String
+    side: String,
+    battleId: Number
   },
   components: {
     Multiselect
   },
   methods: {
+    getIcon (name) {
+      return Dex.getPokemonIcon(name)
+    },
     searchLabel ({ name }) {
       return name.toLowerCase()
+    },
+    input (index, choice) {
+      console.log(`Battle #${this.$props.battleId} ${this.$props.side} pokemon #${index} is ${choice}`)
+      this.$store.commit('updateTeam', {
+        battleId: this.$props.battleId,
+        side: this.$props.side,
+        teamIndex: index,
+        name: choice
+      })
     }
+  },
+  computed: {
+    /*
+    ...mapMultiRowFields(['opponentTeam'])
+    opponentTeam () {
+        return this.$store.state.battles[this.$props.battleId][this.$props.side].team
+    },
+    */
   },
   data () {
     const options = Object.entries(BattlePokedex)
@@ -46,18 +89,31 @@ export default {
         return value && value.num >= 0
       })
       .map(([key, value]) => {
-        return {
-          name: value.species,
-          style: Dex.getPokemonIcon(key)
-        }
+        return value.species
       })
     return {
-      opponentTeam: {},
+      testTeam: [
+      {
+        name: null
+      },
+      {
+        name: null
+      },
+      {
+        name: null
+      },
+      {
+        name: null
+      },
+      {
+        name: null
+      },
+      {
+        name: null
+      },
+      ],
       options: options
     }
-  },
-  mounted () {
-    console.log('Mounted')
   }
 }
 </script>
@@ -119,6 +175,12 @@ a {
 /* custom stuff */
 .team {
   max-width: 500px;
+}
+
+.mons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 10px;
 }
 .picon {
   display: inline-block;

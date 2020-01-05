@@ -1,7 +1,7 @@
 <template>
   <div class="battle">
     <h1>Battle {{id}}</h1>
-    <TeamSelect owner="opponent" />
+    <TeamSelect :battleId="id" side="opponent" />
   </div>
 </template>
 
@@ -11,13 +11,19 @@ import TeamSelect from '@/components/TeamSelect.vue'
 export default {
   name: 'Battle',
   props: {
-    id: String
+    id: Number
   },
   components: {
     TeamSelect
   },
   data () {
     return {
+    }
+  },
+  created () {
+    console.log(this.$store.state)
+    if (!this.$store.state.battles[this.id]) {
+      this.$store.commit('createBattle', {battleId: this.id});
     }
   }
 }

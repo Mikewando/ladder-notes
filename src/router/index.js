@@ -13,7 +13,13 @@ const routes = [
   },
   {
     path: '/battle/:id',
-    component: Battle
+    name: 'battle',
+    component: Battle,
+    props (route) {
+      const props = { ...route.params }
+      props.id = +props.id
+      return props
+    }
   },
   {
     path: '/about',
