@@ -13,8 +13,10 @@
               label="name"
               >
               <template v-slot:option="option">
-                <span class="picon" :style="`${getIcon(option.name)}`"></span>
-                <span class="plabel">{{ option.name }}</span>
+                <div class="pcontainer">
+                  <span class="picon" :style="`${getIcon(option.name)}`"></span>
+                  <span class="plabel">{{ option.name }}</span>
+                </div>
               </template>
               <template v-slot:selected-option="option">
                 <span class="picon" :style="`${getIcon(option.name)}`"></span>
@@ -153,6 +155,10 @@ a {
   max-width: 300px;
 }
 */
+.pcontainer {
+  display: flex;
+  align-items: center;
+}
 .picon {
   width: 40px;
   height: 30px;
