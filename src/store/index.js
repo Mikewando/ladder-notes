@@ -8,12 +8,20 @@ const vuexLocal = new VuexPersistence({
 
 Vue.use(Vuex)
 
+function newMoves () {
+  const output = []
+  for (let i = 0; i < 4; i++) {
+    output[i] = null
+  }
+  return output
+}
+
 function newTeam () {
   const output = []
   for (let i = 0; i < 6; i++) {
     output[i] = {
       name: null,
-      moves: [],
+      moves: newMoves(),
       brought: false
     }
   }
