@@ -1,13 +1,24 @@
 <template>
   <div class="home container">
     <h1 class="title">Battles</h1>
+
     <div class="section">
-      <b-button
-          type="is-primary"
-          @click="createBattle">
-        New Battle
-      </b-button>
+      <div class="columns">
+        <div class="column is-half is-offset-one-quarter buttons">
+          <b-button
+              type="is-primary is-large"
+              @click="createBattle">
+            New Battle
+          </b-button>
+          <b-button
+              type="is-info is-large"
+              @click="replayDialog">
+            From Replay
+          </b-button>
+        </div>
+      </div>
     </div>
+
     <div class="section">
       <div class="battles columns is-multiline">
         <div class="column is-half is-offset-one-quarter"
@@ -74,16 +85,31 @@ export default {
         }
         return a.brought - b.brought
       })
+    },
+    replayDialog () {
+      this.$buefy.dialog.prompt({
+        message: 'Replay URL',
+        inputAttrs: {
+          placeholder: 'https://replay.pokemonshowdown.com/...'
+        },
+        scroll: 'keep',
+        trapFocus: true,
+        onConfirm: (url) => {
+          this.$store.dispatch('battleFromReplay', { battleId: uuidv4(), replayUrl: url })
+        }
+      })
     }
   }
 }
 </script>
 
 <style scoped>
-button.is-primary {
+/*
+.create-battle button {
   min-height: 60px;
   min-width: 150px;
 }
+*/
 .battles > * {
   padding-top: 0;
 }
