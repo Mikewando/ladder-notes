@@ -3,11 +3,11 @@
     <h2 class="subtitle">{{ side }}</h2>
     <div class="columns is-multiline">
       <div v-for="index in teamLayout" :key="index" class="column is-half">
-        <div class="box">
-          <div class="columns">
+        <div :class="`mon-card box ${pokemonActiveStyle(index)}`" @click="broughtPokemon(index, $event)">
+          <div class="mon-card columns is-multiline">
             <v-select
-                :value="$store.state.battles[$props.battleId][$props.side].team[index]"
-                @input="input(index, $event)"
+                :value="getBattleSide().team[index]"
+                @input="pokemonSelect(index, $event)"
                 :options="$store.state.pokemonOptions"
                 class="mons column is-8 is-offset-2"
                 label="name">
@@ -22,6 +22,17 @@
                 <span class="plabel">{{ option.name }}</span>
               </template>
             </v-select>
+            <div
+                v-for="moveIndex in moveLayout"
+                :key="moveIndex"
+                class="move column is-8 is-offset-2">
+              <v-select
+                  :value="getBattleSide().team[index].moves[moveIndex]"
+                  @input="moveSelect(index, moveIndex, $event)"
+                  :options="$store.state.moveOptions"
+                  label="name">
+              </v-select>
+            </div>
           </div>
         </div>
       </div>
@@ -48,7 +59,16 @@ export default {
     searchLabel ({ name }) {
       return name.toLowerCase()
     },
-    input (index, choice) {
+    moveSelect (index, moveIndex, choice) {
+      this.$store.commit('updateMove', {
+        battleId: this.$props.battleId,
+        side: this.$props.side,
+        teamIndex: index,
+        moveIndex: moveIndex,
+        value: choice
+      })
+    },
+    pokemonSelect (index, choice) {
       this.$store.commit('updateTeam', {
         battleId: this.$props.battleId,
         side: this.$props.side,
@@ -56,45 +76,78 @@ export default {
         prop: 'name',
         value: choice
       })
+    },
+    getBattleSide () {
+      if (typeof this.$props.battleId === 'undefined') {
+        return this.$store.state.player
+      } else {
+        return this.$store.state.battles[this.$props.battleId][this.$props.side]
+      }
+    },
+    pokemonActiveStyle (index) {
+      return this.getBattleSide().team[index].brought ? 'brought' : ''
+    },
+    broughtPokemon (index, event) {
+      // Only count clicks on "background"
+      if (!Array.prototype.includes.call(event.explicitOriginalTarget.classList, 'mon-card')) {
+        return;
+      }
+
+      // Don't mark 
+      if (typeof this.$props.battleId === 'undefined') {
+        return;
+      }
+
+      let brought = false
+      if (!this.getBattleSide().team[index].brought) {
+        brought = this.getBattleSide().team.reduce((accumulator, member, index) => {
+          return accumulator + (member.brought ? 1 : 0)
+        }, 1)
+      }
+
+      this.$store.commit('updateTeam', {
+        battleId: this.$props.battleId,
+        side: this.$props.side,
+        teamIndex: index,
+        prop: 'brought',
+        value: brought
+      })
+
+      // TODO update other mons
     }
   },
   computed: {
     teamLayout () {
       return [...Array(6).keys()]
-    }
-  },
-  data () {
-    const options = Object.entries(BattlePokedex)
-      .filter(([key, value]) => {
-        return value && value.num >= 0
-      })
-      .map(([key, value]) => {
-        return value.species
-      })
-    return {
-      testTeam: [
-      ],
-      options: options
+    },
+    moveLayout () {
+      return [...Array(4).keys()]
     }
   }
 }
 </script>
 
 <style>
-.vs__selected {
+.mons .vs__selected {
   min-width: 0;
 }
-.vs__selected-options {
+.mons .vs__selected-options {
   min-width: 0;
   flex-wrap: nowrap;
   padding: 0;
   min-height: 36px;
 }
-.vs__dropdown-option {
+.mons .vs__dropdown-option {
   padding-left: 8px;
 }
-.vs__search:focus {
+.mons .vs__search:focus {
   margin-left: 40px;
+}
+
+.move .vs__dropdown-option {
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  overflow: hidden;
 }
 </style>
 
@@ -117,6 +170,13 @@ a {
 }
 
 /* custom stuff */
+.mon-card .column {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.mon-card.brought {
+  background-color: #124364;
+}
 .v-select {
   padding: 0;
 }

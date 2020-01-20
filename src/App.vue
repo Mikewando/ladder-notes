@@ -2,15 +2,11 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <router-link to="/team">Team</router-link>
     </div>
     <router-view/>
   </div>
 </template>
-
-<!--<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>-->
-
-<!--<style src="vue-select/dist/vue-select.css"></style>-->
 
 <style lang="scss">
 @import "assets/scss/app.scss"

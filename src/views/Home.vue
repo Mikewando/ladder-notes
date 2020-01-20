@@ -17,15 +17,16 @@
               tag="b-button"
               :class="`battle-link is-outlined ${getResultClass(battle)}`"
               :to="{ name: 'battle', params: { id: id } }">
-            <div>
+            <div class="team-preview">
               <span
-                v-for="mon in battle.opponent.team"
+                v-for="mon in sortTeam(battle.opponent.team)"
                 :key="mon.name"
                 :style="`${getIcon(mon.name)}`"
-                class="picon"
+                :class="`picon ${mon.brought ? 'active' : 'inactive'}`"
               ></span>
             </div>
           </router-link>
+          <b-button @click="removeBattle(id)">X</b-button>
         </div>
       </div>
     </div>
@@ -43,6 +44,16 @@ export default {
     },
     createBattle () {
       this.$store.commit('createBattle', { battleId: uuidv4() })
+      // The created battle is always first
+      this.$router.push({
+        'name': 'battle',
+        'params': {
+          id: 0
+        }
+      })
+    },
+    removeBattle(id) {
+      this.$store.commit('removeBattle', { battleId: id })
     },
     getResultClass (battle) {
       if (battle.result === 'Won') {
@@ -51,31 +62,40 @@ export default {
         return 'is-danger'
       }
       return ''
+    },
+    sortTeam (team) {
+      return team.slice().sort((a, b) => {
+        if (!a.brought && !b.brought) {
+          return 0
+        } else if (!a.brought) {
+          return 1
+        } else if (!b.brought) {
+          return -1
+        }
+        return a.brought - b.brought
+      })
     }
   }
 }
 </script>
 
 <style scoped>
-button {
+button.is-primary {
   min-height: 60px;
   min-width: 150px;
 }
 .battles > * {
   padding-top: 0;
 }
-/*
-.battles {
-  display: grid;
-  grid-row: 1fr;
-  grid-gap: 10px;
-  max-width: 400px;
-  margin: auto;
+.team-preview {
+  display: flex;
 }
-*/
 .picon {
   display: inline-block;
   width: 40px;
   height: 30px;
+}
+.picon.inactive {
+  opacity: .5;
 }
 </style>

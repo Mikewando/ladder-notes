@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '@/views/Home.vue'
 import Battle from '@/views/Battle.vue'
+import Team from '@/views/Team.vue'
 
 Vue.use(VueRouter)
 
@@ -20,6 +21,11 @@ const routes = [
       props.id = +props.id
       return props
     }
+  },
+  {
+    path: '/team',
+    name: 'team',
+    component: Team,
   },
   {
     path: '/about',
