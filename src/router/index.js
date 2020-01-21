@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '@/views/Home.vue'
 import Battle from '@/views/Battle.vue'
 import Team from '@/views/Team.vue'
+import Analysis from '@/views/Analysis.vue'
 
 Vue.use(VueRouter)
 
@@ -26,6 +27,11 @@ const routes = [
     path: '/team',
     name: 'team',
     component: Team,
+  },
+  {
+    path: '/analysis',
+    name: 'analysis',
+    component: Analysis,
   },
   {
     path: '/about',

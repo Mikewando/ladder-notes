@@ -104,12 +104,6 @@ export default {
 </script>
 
 <style scoped>
-/*
-.create-battle button {
-  min-height: 60px;
-  min-width: 150px;
-}
-*/
 .battles > * {
   padding-top: 0;
 }
