@@ -1,20 +1,24 @@
 <template>
   <div class="home container">
-    <h1 class="title">Battles</h1>
+    <div class="level has-centered-text">
+      <h1 class="level-item title">Battles</h1>
+    </div>
 
     <div class="section">
-      <div class="columns">
-        <div class="column is-half is-offset-one-quarter buttons">
-          <b-button
-              type="is-primary is-large"
-              @click="createBattle">
-            New Battle
-          </b-button>
-          <b-button
-              type="is-info is-large"
-              @click="replayDialog">
-            From Replay
-          </b-button>
+      <div class="columns is-centered">
+        <div class="column is-narrow">
+          <div class="buttons is-centered">
+            <b-button
+                type="is-primary is-large"
+                @click="createBattle">
+              New Battle
+            </b-button>
+            <b-button
+                type="is-info is-large"
+                @click="replayDialog">
+              From Replay
+            </b-button>
+          </div>
         </div>
       </div>
     </div>
@@ -24,20 +28,22 @@
         <div class="column is-half is-offset-one-quarter"
             v-for="(battle, id) in $store.state.battles"
             :key="id">
-          <router-link
-              tag="b-button"
-              :class="`battle-link is-outlined ${getResultClass(battle)}`"
-              :to="{ name: 'battle', params: { id: id } }">
-            <div class="team-preview">
-              <span
-                v-for="mon in sortTeam(battle.opponent.team)"
-                :key="mon.name"
-                :style="`${getIcon(mon.name)}`"
-                :class="`picon ${mon.brought ? 'active' : 'inactive'}`"
-              ></span>
-            </div>
-          </router-link>
-          <b-button @click="removeBattle(id)">X</b-button>
+          <div class="buttons is-centered has-addons">
+            <router-link
+                tag="b-button"
+                :class="`battle-link is-outlined ${getResultClass(battle)}`"
+                :to="{ name: 'battle', params: { id: id } }">
+              <div class="team-preview">
+                <span
+                  v-for="mon in sortTeam(battle.opponent.team)"
+                  :key="mon.name"
+                  :style="`${getIcon(mon.name)}`"
+                  :class="`picon ${mon.brought ? 'active' : 'inactive'}`"
+                ></span>
+              </div>
+            </router-link>
+            <b-button @click="removeBattle(id)"><b-icon icon="delete"></b-icon></b-button>
+          </div>
         </div>
       </div>
     </div>

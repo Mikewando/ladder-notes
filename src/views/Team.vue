@@ -1,8 +1,17 @@
 <template>
   <div class="team">
-    <h1 class="title">Update Team</h1>
+    <div class="level has-centered-text">
+      <h1 class="level-item title">Update Team</h1>
+    </div>
     <div class="inputs container">
-      <TeamSelect side="player" />
+      <div class="section">
+        <div class="box">
+          <b-field label="Showdown Name">
+            <b-input :model="showdownName"></b-input>
+          </b-field>
+        </div>
+        <TeamSelect side="player" />
+      </div>
     </div>
   </div>
 </template>
@@ -21,6 +30,7 @@ export default {
   },
   data () {
     return {
+      "showdownName": "slowpoke.jpg"
     }
   },
   created () {

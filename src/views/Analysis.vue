@@ -1,6 +1,8 @@
 <template>
   <div class="analysis container">
-    <h1 class="title">Analysis</h1>
+    <div class="level has-centered-text">
+      <h1 class="level-item title">Analysis</h1>
+    </div>
 
     <div class="section">
       <div class="columns">
@@ -28,7 +30,7 @@
       <div class="columns">
         <div class="column is-half is-offset-one-quarter">
           <div class="box">
-            <h2 class="title is-4">Common Losses</h2>
+            <h2 class="title is-4">Tough Matchups</h2>
             <b-table :data="commonLosses">
               <template slot-scope="props">
                 <b-table-column field="name" label="Pokemon" centered>
@@ -49,6 +51,33 @@
         </div>
       </div>
     </div>
+
+    <div class="section">
+      <div class="columns">
+        <div class="column is-half is-offset-one-quarter">
+          <div class="box">
+            <h2 class="title is-4">Positive Matchups</h2>
+            <b-table :data="commonWins">
+              <template slot-scope="props">
+                <b-table-column field="name" label="Pokemon" centered>
+                  <span class="picon" :style="`${getIcon(props.row.name)}`"></span>
+                </b-table-column>
+                <b-table-column field="score" label="Score" numeric>
+                  {{props.row.score.toFixed(2)}}
+                </b-table-column>
+                <b-table-column field="score" label="Wins" numeric>
+                  {{props.row.wins}}
+                </b-table-column>
+                <b-table-column field="score" label="Losses" numeric>
+                  {{props.row.losses}}
+                </b-table-column>
+              </template>
+            </b-table>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -64,6 +93,64 @@ export default {
     getIcon (name) {
       return Dex.getPokemonIcon(name)
     },
+    calculateMatchups (score) {
+      const battles = this.$store.state.battles
+      let winsAgainstMons = new Map()
+      let lossesToMons = new Map()
+      for (let battle of battles) {
+        if (battle.result === 'Won') {
+          for (let mon of battle.opponent.team) {
+            if (!mon.brought) {
+              continue
+            }
+            winsAgainstMons.set(mon.name, winsAgainstMons.has(mon.name) ? winsAgainstMons.get(mon.name) + 1 : 1)
+            if (!lossesToMons.has(mon.name)) {
+              lossesToMons.set(mon.name, 0)
+            }
+          }
+        } else {
+          for (let mon of battle.opponent.team) {
+            if (!mon.brought) {
+              continue
+            }
+            lossesToMons.set(mon.name, lossesToMons.has(mon.name) ? lossesToMons.get(mon.name) + 1 : 1)
+            if (!winsAgainstMons.has(mon.name)) {
+              winsAgainstMons.set(mon.name, 0)
+            }
+          }
+        }
+      }
+
+      let mons = Array.from(lossesToMons.keys())
+
+      mons.sort((a, b) => {
+        const bScore = score({
+          losses: lossesToMons.get(b),
+          wins: winsAgainstMons.get(b),
+          battles: battles.length
+        })
+        const aScore = score({
+          losses: lossesToMons.get(a),
+          wins: winsAgainstMons.get(a),
+          battles: battles.length
+        })
+        return bScore - aScore
+      })
+
+      mons = mons.slice(0, 10)
+      return mons.map((name) => {
+        return {
+          name: name,
+          wins: winsAgainstMons.get(name),
+          losses: lossesToMons.get(name),
+          score: score({
+          losses: lossesToMons.get(name),
+          wins: winsAgainstMons.get(name),
+          battles: battles.length
+          })
+        }
+      })
+    }
   },
   filters: {
     pluralize (value, singular, plural) {
@@ -88,60 +175,23 @@ export default {
       return (wins / battles.length * 100).toFixed(0)
     },
     commonLosses () {
-      const battles = this.$store.state.battles
-      let winsAgainstMons = new Map()
-      let lossesToMons = new Map()
-      for (let battle of battles) {
-        if (battle.result === 'Won') {
-          for (let mon of battle.opponent.team) {
-            if (!mon.brought) {
-              continue
-            }
-            winsAgainstMons.set(mon.name, winsAgainstMons.has(mon.name) ? winsAgainstMons.get(mon.name) + 1 : 1)
-          }
-        } else {
-          for (let mon of battle.opponent.team) {
-            if (!mon.brought) {
-              continue
-            }
-            lossesToMons.set(mon.name, lossesToMons.has(mon.name) ? lossesToMons.get(mon.name) + 1 : 1)
-            if (!winsAgainstMons.has(mon.name)) {
-              winsAgainstMons.set(mon.name, 0)
-            }
-          }
-        }
-      }
-
-      let mons = Array.from(lossesToMons.keys())
-
-      function score(name) {
+      return this.calculateMatchups(({ losses, wins, battles }) => {
         // The higher this number is the more weight is given to commonly encountered mons
         const weight = 3
-
-        const losses = lossesToMons.get(name)
-        const wins = winsAgainstMons.get(name)
         const occurrences = losses + wins
-        const numBattles = battles.length
-
-        const occurrenceRate = occurrences / numBattles
-
+        const occurrenceRate = occurrences / battles
         return (losses + (weight * occurrenceRate)) / (occurrences + weight)
-      }
-
-      mons.sort((a, b) => {
-        return score(b) - score(a)
       })
-
-      mons = mons.slice(0, 10)
-      return mons.map((name) => {
-        return {
-          name: name,
-          wins: winsAgainstMons.get(name),
-          losses: lossesToMons.get(name),
-          score: score(name)
-        }
+    },
+    commonWins () {
+      return this.calculateMatchups(({ losses, wins, battles }) => {
+        // The higher this number is the more weight is given to commonly encountered mons
+        const weight = 3
+        const occurrences = losses + wins
+        const occurrenceRate = occurrences / battles
+        return (wins + (weight * occurrenceRate)) / (occurrences + weight)
       })
-    }
+    },
   },
   data () {
     return {

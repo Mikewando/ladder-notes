@@ -5,6 +5,7 @@
 // 2. Setup your Custom Colors
 @import "darkly/variables";
 $section-padding: 1rem 1.5rem;
+$mdi-font-path: '~@mdi/font/fonts';
 
 @import "~bulma/sass/utilities/derived-variables";
 
@@ -13,6 +14,7 @@ $section-padding: 1rem 1.5rem;
 @import "~bulma";
 @import "~buefy/src/scss/buefy";
 @import "~vue-select/src/scss/vue-select";
+@import "~@mdi/font/scss/materialdesignicons";
 
 // 4. Provide custom buefy overrides and site styles here
 @import "darkly/overrides";
