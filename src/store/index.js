@@ -4,8 +4,6 @@ import VuexPersistence from 'vuex-persist'
 
 import axios from 'axios'
 
-const PLAYER_NAME = 'slowpoke.jpg'
-
 const vuexLocal = new VuexPersistence({
   storage: window.localStorage
 })
@@ -77,9 +75,13 @@ export default new Vuex.Store({
       team: newTeam()
     },
     pokemonOptions: getPokemonOptions(),
-    moveOptions: getMoveOptions()
+    moveOptions: getMoveOptions(),
+    showdownName: ''
   },
   mutations: {
+    updateShowdownName (state, {showdownName}) {
+      state.showdownName = showdownName
+    },
     createBattle (state, {battleId, opponentTeam, playerTeam}) {
       if (typeof opponentTeam === 'undefined') {
         opponentTeam = newTeam()
@@ -150,7 +152,7 @@ export default new Vuex.Store({
             switch (command) {
               case 'player': {
                 const [ pid, name, ...ignored ] = unparsed
-                if (name === PLAYER_NAME) {
+                if (name === state.showdownName) {
                   playerTeam = teams[pid]
                   if (pid === 'p1') {
                     opponentTeam = teams.p2
@@ -184,7 +186,7 @@ export default new Vuex.Store({
               }
               case 'win': {
                 const [ name ] = unparsed
-                if (name === PLAYER_NAME) {
+                if (name === state.showdownName) {
                   result = 'Won'
                 } else {
                   result = 'Lost'

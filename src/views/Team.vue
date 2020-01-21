@@ -5,11 +5,13 @@
     </div>
     <div class="inputs container">
       <div class="section">
-        <div class="box">
-          <b-field label="Showdown Name">
-            <b-input :model="showdownName"></b-input>
-          </b-field>
-        </div>
+        <div class="columns is-centered">
+          <div class="column is-half box">
+            <b-field label="Showdown Name">
+              <b-input v-model="showdownName"></b-input>
+            </b-field>
+          </div>
+          </div>
         <TeamSelect side="player" />
       </div>
     </div>
@@ -28,9 +30,14 @@ export default {
   },
   methods: {
   },
-  data () {
-    return {
-      "showdownName": "slowpoke.jpg"
+  computed: {
+    showdownName: {
+      get () {
+        return this.$store.state.showdownName
+      },
+      set (value) {
+        this.$store.commit('updateShowdownName', { showdownName: value })
+      }
     }
   },
   created () {

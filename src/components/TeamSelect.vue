@@ -1,6 +1,8 @@
 <template>
   <div class="team section">
-    <h2 class="subtitle">{{ side }}</h2>
+    <div class="level has-centered-text">
+      <h2 class="level-item subtitle">{{ side }}</h2>
+    </div>
     <div class="columns is-multiline">
       <div v-for="index in teamLayout" :key="index" class="column is-half">
         <div :class="`mon-card box ${pokemonActiveStyle(index)}`" @click="broughtPokemon(index, $event)">

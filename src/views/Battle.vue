@@ -1,18 +1,24 @@
 <template>
   <div class="battle">
-    <h1 class="title">{{$store.state.battles[id].id}}</h1>
+    <div class="level has-centered-text">
+      <h1 class="level-item title">{{$store.state.battles[id].id}}</h1>
+    </div>
     <div class="inputs container">
       <TeamSelect :battleId="id" side="opponent" />
       <div class="section">
-        <div class="box">
-          <b-button
-              type="is-outlined"
-              :class="`picon ${pokemonActiveStyle(index, 'player')}`"
-              @click="broughtPokemon(index, $event)"
-              v-for="index in teamLayout"
-              :key="index" 
-              :style="getIcon($store.state.battles[id].player.team[index].name)">
-          </b-button>
+        <div class="columns is-centered">
+          <div class="column is-narrow box">
+            <div class="buttons is-centered">
+              <b-button
+                  type="is-outlined"
+                  :class="`picon ${pokemonActiveStyle(index, 'player')}`"
+                  @click="broughtPokemon(index, $event)"
+                  v-for="index in teamLayout"
+                  :key="index" 
+                  :style="getIcon($store.state.battles[id].player.team[index].name)">
+              </b-button>
+            </div>
+          </div>
         </div>
       </div>
       <div class="section">
